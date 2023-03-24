@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>Payments</AssemblyName>
+        <RootNamespace>Payments</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Include="Result.fs" />
+      <Compile Include="Primitives.fs" />
+      <Compile Include="Transaction.fs" />
+      <Compile Include="Decider.fs" />
+      <Compile Include="Handler.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FsToolkit.ErrorHandling" Version="4.4.0" />
+        <PackageReference Include="Giraffe" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>

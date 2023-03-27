@@ -5,11 +5,10 @@
 
         <IsPackable>false</IsPackable>
         <GenerateProgramFile>false</GenerateProgramFile>
-        <RootNamespace>Payments.Domain.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="TransactionShould.fs" />
+        <Compile Include="TransactionHandlerTests.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
@@ -18,6 +17,7 @@
         <PackageReference Update="FSharp.Core" Version="7.0.200" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
         <PackageReference Include="xunit" Version="2.4.2" />
+        <PackageReference Include="xunit.extensibility.core" Version="2.4.2" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Payments\Payments.fsproj" />
+      <ProjectReference Include="..\Payments.WebApi\Payments.WebApi.fsproj" />
     </ItemGroup>
 
 </Project>

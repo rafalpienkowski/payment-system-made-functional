@@ -1,6 +1,6 @@
 open Microsoft.AspNetCore.Builder
 open Giraffe
-open Payments.Handler
+open Payments.WebApi.Handler
 open Payments.WebApi.Marten
 open Payments.WebApi.Provider
 open Payments.WebApi.View

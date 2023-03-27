@@ -1,4 +1,4 @@
-module Payments.Handler
+module Payments.WebApi.Handler
 
 open System
 open FsToolkit.ErrorHandling

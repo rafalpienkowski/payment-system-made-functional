@@ -7,7 +7,7 @@
         <Compile Include="View.fs" />
         <Compile Include="Marten.fs" />
         <Compile Include="Provider.fs" />
-        <Compile Include="Handler.fs" />
+        <Compile Include="TransactionHandler.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
     <ItemGroup>

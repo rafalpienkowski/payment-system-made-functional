@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments", "Payments\Payments.fsproj", "{828E16E1-1903-48DA-B303-AF2ECD82A506}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.Domain.Tests", "Payments.Domain.Tests\Payments.Domain.Tests.fsproj", "{5B5658A0-47E5-4F1E-A7B8-57072179FD6B}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.Tests", "Payments.Tests\Payments.Tests.fsproj", "{5B5658A0-47E5-4F1E-A7B8-57072179FD6B}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.WebApi", "Payments.WebApi\Payments.WebApi.fsproj", "{E4C65552-1408-4044-8A51-57CD1281FA18}"
 EndProject

@@ -12,26 +12,6 @@ open Payments.Primitives
 open Payments.Decider
 open Payments.Transaction
 
-type StartStream = Guid -> obj list -> Result<int, InfrastructureError>
-type AppendStream = Guid -> obj list -> Result<int, InfrastructureError>
-type FetchStream = Guid -> Result<obj list, InfrastructureError>
-
-type InitializeTransactionDto =
-    { TransactionId: Guid
-      CustomerId: Guid
-      Amount: decimal
-      StartedAt: DateTime }
-
-type PostTransactionDto =
-    { TransactionId: Guid
-      Succeeded: bool
-      Now: DateTime }
-
-type ConfirmTransactionDto =
-    { TransactionId: Guid
-      Succeeded: bool
-      Now: DateTime }
-
 let validateInitializeTransactionRequest (request: InitializeTransactionDto) =
     let createInitializeTransaction transactionId customerId amount startDate : TransactionCommand =
         Initialize

@@ -26,6 +26,22 @@ type Transaction =
            FinishedAt: FinishDate
            Version: int64 |}
 
+type InitializeTransactionDto =
+    { TransactionId: Guid
+      CustomerId: Guid
+      Amount: decimal
+      StartedAt: DateTime }
+
+type PostTransactionDto =
+    { TransactionId: Guid
+      Succeeded: bool
+      Now: DateTime }
+
+type ConfirmTransactionDto =
+    { TransactionId: Guid
+      Succeeded: bool
+      Now: DateTime }
+
 type TransactionInitialized =
     { TransactionId: Guid
       CustomerId: Guid

@@ -2,8 +2,8 @@ module Payments.WebApi.Marten
 
 open Marten
 open Marten.Events.Projections
+open Payments.Decider
 open Payments.WebApi.Settings
-open Payments.Handler
 open Payments.Primitives
 open Payments.WebApi.View
 open Weasel.Core

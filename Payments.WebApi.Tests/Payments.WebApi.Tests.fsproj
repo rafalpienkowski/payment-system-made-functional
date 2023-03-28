@@ -10,7 +10,7 @@
     <ItemGroup>
         <Compile Include="TestHelpers.fs" />
         <Compile Include="PingShould.fs" />
-        <Compile Include="InitializeTransactionShould.fs" />
+        <Compile Include="TransactionEndpointShould.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 

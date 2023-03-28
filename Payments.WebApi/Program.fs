@@ -1,24 +1,16 @@
-open Microsoft.AspNetCore.Builder
-open Giraffe
-open Payments.WebApi.Handler
-open Payments.WebApi.Marten
-open Payments.WebApi.Provider
-open Payments.WebApi.View
+open Microsoft.Extensions.Hosting
+open Microsoft.AspNetCore.Hosting
+open Payments.WebApi.Settings
 
-let webApp =
-    choose
-        [ route "/ping" >=> json {| Response = "pong" |}
-          route "/" >=> GET >=> readTransactions
-          route "/initialize"
-          >=> POST
-          >=> initializeTransactionHandler startStream acknowledgeWithProvider appendStream
-          route "/post" >=> POST >=> postTransactionHandler fetchStream appendStream
-          route "/confirm" >=> POST >=> confirmTransactionHandler fetchStream appendStream ]
-
-let builder = WebApplication.CreateBuilder()
-builder.Services.AddGiraffe() |> ignore
-
-let app = builder.Build()
-
-app.UseGiraffe webApp
-app.Run()
+[<EntryPoint>]
+let main _ =
+    Host.CreateDefaultBuilder()
+        .ConfigureWebHostDefaults(
+            fun webHostBuilder ->
+                webHostBuilder
+                    .Configure(configureApp)
+                    .ConfigureServices(configureServices)
+                    |> ignore)
+        .Build()
+        .Run()
+    0

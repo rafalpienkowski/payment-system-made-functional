@@ -3,10 +3,12 @@ module Payments.WebApi.Marten
 open Marten
 open Marten.Events.Projections
 open Payments.Decider
-open Payments.WebApi.Settings
 open Payments.Primitives
 open Payments.WebApi.View
 open Weasel.Core
+
+let connectionString =
+    "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;"
 
 let documentStore =
     DocumentStore.For(fun opt ->
@@ -22,7 +24,8 @@ let startStream: StartStream =
             session.Events.StartStream(streamId, objects) |> ignore
             session.SaveChanges()
             Ok 0
-        with ex -> Error(InfrastructureError [ ex.Message ])
+        with ex ->
+            Error(InfrastructureError [ ex.Message ])
 
 let appendStream: AppendStream =
     fun streamId events ->
@@ -32,7 +35,8 @@ let appendStream: AppendStream =
             session.Events.Append(streamId, objects) |> ignore
             session.SaveChanges()
             Ok 0
-        with ex -> Error(InfrastructureError [ ex.Message ])
+        with ex ->
+            Error(InfrastructureError [ ex.Message ])
 
 let fetchStream: FetchStream =
     fun streamId ->
@@ -41,4 +45,5 @@ let fetchStream: FetchStream =
             let rawEvents = session.Events.FetchStream(streamId)
             let events = rawEvents :> seq<_> |> Seq.map (fun e -> e.Data) |> Seq.toList
             Ok events
-        with ex -> Error(InfrastructureError [ ex.Message ])
+        with ex ->
+            Error(InfrastructureError [ ex.Message ])

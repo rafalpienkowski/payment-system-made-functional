@@ -8,7 +8,9 @@ open Payments.Transaction
 open Weasel.Postgresql.Tables
 open Giraffe
 open Npgsql.FSharp
-open Payments.WebApi.Settings
+
+let connectionString =
+    "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;"
 
 type TransactionProjection() =
     inherit EventProjection()
@@ -88,17 +90,15 @@ let getAllTransactions (connectionString: string) : TransactionView list =
     |> Sql.connect
     |> Sql.query "SELECT * FROM public.transactions"
     |> Sql.execute (fun read ->
-        {
-            TransactionId = read.uuid "transaction_id"
-            CustomerId = read.uuid "customer_id"
-            StartedAt = read.dateTime "started_at"
-            FinishedAt = read.dateTimeOrNone "finished_at"
-            ProviderReference = read.string "provider_reference"
-            Amount = read.decimal "amount"
-            Status = read.string "status"
-        })
+        { TransactionId = read.uuid "transaction_id"
+          CustomerId = read.uuid "customer_id"
+          StartedAt = read.dateTime "started_at"
+          FinishedAt = read.dateTimeOrNone "finished_at"
+          ProviderReference = read.string "provider_reference"
+          Amount = read.decimal "amount"
+          Status = read.string "status" })
 
-let readTransactions : HttpHandler =
+let readTransactions: HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         let transactions = getAllTransactions connectionString
         json {| transactions = transactions |} next ctx

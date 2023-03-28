@@ -8,7 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="TransactionHandlerTests.fs" />
+        <Compile Include="TestHelpers.fs" />
+        <Compile Include="PingShould.fs" />
+        <Compile Include="InitializeTransactionShould.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
@@ -16,6 +18,7 @@
         <PackageReference Include="FsUnit.xUnit" Version="5.2.0" />
         <PackageReference Update="FSharp.Core" Version="7.0.200" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.4" />
         <PackageReference Include="NSubstitute" Version="5.0.0" />
         <PackageReference Include="xunit" Version="2.4.2" />
         <PackageReference Include="xunit.extensibility.core" Version="2.4.2" />

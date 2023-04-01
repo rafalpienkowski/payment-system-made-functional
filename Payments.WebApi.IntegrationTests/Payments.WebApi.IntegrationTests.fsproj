@@ -5,6 +5,7 @@
 
         <IsPackable>false</IsPackable>
         <GenerateProgramFile>false</GenerateProgramFile>
+        <RootNamespace>Payments.WebApi.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

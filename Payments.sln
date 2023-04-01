@@ -9,7 +9,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.Tests", "Payments.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.WebApi", "Payments.WebApi\Payments.WebApi.fsproj", "{E4C65552-1408-4044-8A51-57CD1281FA18}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.WebApi.Tests", "Payments.WebApi.Tests\Payments.WebApi.Tests.fsproj", "{17D2B017-8AD9-4B6E-A880-403E958A6141}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.WebApi.IntegrationTests", "Payments.WebApi.IntegrationTests\Payments.WebApi.IntegrationTests.fsproj", "{17D2B017-8AD9-4B6E-A880-403E958A6141}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -101,4 +101,4 @@ let getAllTransactions (connectionString: string) : TransactionView list =
 let readTransactions: HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         let transactions = getAllTransactions connectionString
-        json {| transactions = transactions |} next ctx
+        json transactions next ctx

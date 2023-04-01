@@ -7,6 +7,8 @@ open Payments.WebApi.Handler
 open Payments.WebApi.Marten
 open Payments.WebApi.Provider
 open Payments.WebApi.View
+open System.Text.Json
+open System.Text.Json.Serialization
 
 let connectionString =
     "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;"
@@ -27,4 +29,10 @@ let webApp =
 
 let configureApp (app: IApplicationBuilder) = app.UseGiraffe webApp
 
-let configureServices (services: IServiceCollection) = services.AddGiraffe() |> ignore
+let configureServices (services: IServiceCollection) =
+    services.AddGiraffe() |> ignore
+    
+    let jsonOptions =
+        JsonFSharpOptions.Default()
+            .ToJsonSerializerOptions()
+    services.AddSingleton<Json.ISerializer>(SystemTextJson.Serializer(jsonOptions)) |> ignore

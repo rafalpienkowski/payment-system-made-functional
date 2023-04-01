@@ -5,7 +5,9 @@ open System.Net
 open System.Net.Http
 open System.Text
 open System.Text.Json
+open System.Text.Json.Serialization
 open Payments.Transaction
+open Payments.WebApi.View
 open Xunit
 open FsUnit.Xunit
 open Payments.WebApi.Tests.TestHelpers
@@ -17,6 +19,20 @@ let createPostRequest (url: string) dto =
     let content = new StringContent(json, UnicodeEncoding.UTF8, "application/json")
     httpRequest.Content <- content
     httpRequest
+
+let options =
+    JsonFSharpOptions.Default()
+        .ToJsonSerializerOptions()
+        
+JsonFSharpOptions.Default()
+    .AddToJsonSerializerOptions(options)
+
+let assertTransaction (expectedTransaction: TransactionView) : unit =
+    let httpRequest = new HttpRequestMessage(HttpMethod.Get, "/")
+    let response = testRequest httpRequest
+    let content = response.Content.ReadAsStringAsync().Result
+    let transactions = JsonSerializer.Deserialize<TransactionView list> content
+    transactions.Length |> should be (greaterThan 0)
 
 let transactionWithNegativeAmount =
     { TransactionId = Guid.NewGuid()
@@ -91,3 +107,12 @@ let ``accept valid transaction request rejected by provider`` () =
     let response = testRequest httpRequest
 
     response.StatusCode |> should equal HttpStatusCode.OK
+
+    assertTransaction
+        { TransactionId = validTransactionThatIsRejectedByProvider.TransactionId
+          CustomerId = validTransactionThatIsRejectedByProvider.CustomerId
+          StartedAt = validTransactionThatIsRejectedByProvider.StartedAt
+          FinishedAt = None
+          ProviderReference = ""
+          Amount = validTransactionThatIsRejectedByProvider.Amount
+          Status = "" }

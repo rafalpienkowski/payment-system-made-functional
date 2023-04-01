@@ -38,19 +38,19 @@ let transactionWithNegativeAmount =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = -1m
-      StartedAt = DateTime.UtcNow }
+      StartedAt = DateTimeOffset.UtcNow }
 
 let transactionFromFuture =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = 1m
-      StartedAt = DateTime.UtcNow.AddDays(10) }
+      StartedAt = DateTimeOffset.UtcNow.AddDays(10) }
 
 let transactionFromFutureWithNegativeAmount =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = -1m
-      StartedAt = DateTime.UtcNow.AddDays(10) }
+      StartedAt = DateTimeOffset.UtcNow.AddDays(10) }
 
 let invalidInitializeRequests: obj[] list =
     [ [| transactionWithNegativeAmount |]
@@ -82,7 +82,7 @@ let validTransactionThatCausesInfrastructureError =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = 1m
-      StartedAt = DateTime.UtcNow.AddMinutes(-1) }
+      StartedAt = DateTimeOffset.UtcNow.AddMinutes(-1) }
 
 [<Fact>]
 let ``accept valid initialize transaction request and handle infrastructure error while calling provider`` () =
@@ -97,7 +97,7 @@ let validTransactionThatIsRejectedByProvider =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = 32m
-      StartedAt = DateTime.UtcNow.AddMinutes(-1) }
+      StartedAt = DateTimeOffset.UtcNow.AddMinutes(-1) }
 
 [<Fact>]
 let ``accept valid transaction request rejected by provider`` () =

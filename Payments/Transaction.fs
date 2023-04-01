@@ -30,7 +30,7 @@ type InitializeTransactionDto =
     { TransactionId: Guid
       CustomerId: Guid
       Amount: decimal
-      StartedAt: DateTime }
+      StartedAt: DateTimeOffset }
 
 type PostTransactionDto =
     { TransactionId: Guid
@@ -46,33 +46,33 @@ type TransactionInitialized =
     { TransactionId: Guid
       CustomerId: Guid
       Amount: decimal
-      StartedAt: DateTime
+      StartedAt: DateTimeOffset
       Version: int64 }
 
 type TransactionAcknowledged =
     { TransactionId: Guid
       ProviderReference: string
-      RecordedAt: DateTime
+      RecordedAt: DateTimeOffset
       Version: int64 }
 
 type TransactionSucceeded =
     { TransactionId: Guid
-      RecordedAt: DateTime
+      RecordedAt: DateTimeOffset
       Version: int64 }
 
 type TransactionFailed =
     { TransactionId: Guid
-      RecordedAt: DateTime
+      RecordedAt: DateTimeOffset
       Version: int64 }
 
 type TransactionConfirmed =
     { TransactionId: Guid
-      FinishedAt: DateTime
+      FinishedAt: DateTimeOffset
       Version: int64 }
 
 type TransactionDeclined =
     { TransactionId: Guid
-      FinishedAt: DateTime
+      FinishedAt: DateTimeOffset
       Version: int64 }
 
 type TransactionEvent =

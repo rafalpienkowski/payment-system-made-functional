@@ -7,7 +7,6 @@ open Payments.WebApi.Handler
 open Payments.WebApi.Marten
 open Payments.WebApi.Provider
 open Payments.WebApi.View
-open System.Text.Json
 open System.Text.Json.Serialization
 
 let connectionString =

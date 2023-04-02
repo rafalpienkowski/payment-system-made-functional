@@ -25,7 +25,7 @@ type TransactionProjection() =
 
         base.SchemaObjects.Add table
 
-        let projectTransaction (event: TransactionEvent) (ops: IDocumentOperations) =
+        let projectTransaction (event: TransactionEvent) (ops: IDocumentOperations) : unit=
             match event with
             | TransactionEvent.Initialized e ->
                 ops.QueueSqlCommand(
@@ -70,9 +70,7 @@ type TransactionProjection() =
                     e.TransactionId
                 )
 
-        let action = Action<TransactionEvent, IDocumentOperations> projectTransaction
-
-        base.Project<TransactionEvent>(action)
+        base.Project<TransactionEvent>(projectTransaction)
 
 type TransactionView =
     { TransactionId: Guid

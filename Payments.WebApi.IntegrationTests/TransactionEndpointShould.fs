@@ -138,3 +138,46 @@ let ``accept valid transaction request rejected by provider`` () =
           ProviderReference = None
           Amount = validTransactionThatIsRejectedByProvider.Amount
           Status = "Acknowledged" }
+
+let initializeAndAcknowledgeTransactionWithProvider transaction =
+    let httpRequest = createPostRequest "/transactions/initialize" transaction
+    let response = testRequest httpRequest
+    response.StatusCode |> should equal HttpStatusCode.OK
+
+let postSucceededTransactionWith (transactionId: Guid) =
+    let httpRequest =
+        createPostRequest
+            "/transactions/post"
+            { TransactionId = transactionId
+              Succeeded = true
+              Now = DateTime.Now.AddDays(-1).AddMinutes(1) }
+
+    let response = testRequest httpRequest
+    response.StatusCode |> should equal HttpStatusCode.OK
+
+let confirmSucceededTransactionWith (transactionId: Guid) (finishedAt: DateTime)=
+    let httpRequest =
+        createPostRequest
+            "/transactions/confirm"
+            { TransactionId = transactionId
+              Succeeded = true
+              Now = finishedAt}
+
+    let response = testRequest httpRequest
+    response.StatusCode |> should equal HttpStatusCode.OK
+
+[<Fact>]
+let ``successfully process transaction`` () =
+    initializeAndAcknowledgeTransactionWithProvider validTransaction
+    postSucceededTransactionWith validTransaction.TransactionId
+    let finishedAt = DateTime.Now.AddDays(-1).AddMinutes(2) 
+    confirmSucceededTransactionWith validTransaction.TransactionId finishedAt
+
+    assertTransaction
+        { TransactionId = validTransaction.TransactionId
+          CustomerId = validTransaction.CustomerId
+          StartedAt = validTransaction.StartedAt
+          FinishedAt = Some(finishedAt)
+          ProviderReference = None
+          Amount = validTransaction.Amount
+          Status = "Confirmed" }

@@ -11,6 +11,11 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.WebApi", "Payments
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Payments.WebApi.IntegrationTests", "Payments.WebApi.IntegrationTests\Payments.WebApi.IntegrationTests.fsproj", "{17D2B017-8AD9-4B6E-A880-403E958A6141}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4156929F-B45A-4B79-BCD1-610A41B32793}"
+	ProjectSection(SolutionItems) = preProject
+		flow.jpg = flow.jpg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

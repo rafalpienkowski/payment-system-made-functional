@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4156929F-B45A-4B79-BCD1-610A41B32793}"
 	ProjectSection(SolutionItems) = preProject
 		flow.jpg = flow.jpg
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global

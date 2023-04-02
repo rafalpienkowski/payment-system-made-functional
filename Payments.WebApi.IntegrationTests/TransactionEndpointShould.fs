@@ -20,37 +20,41 @@ let createPostRequest (url: string) dto =
     httpRequest.Content <- content
     httpRequest
 
-let options =
-    JsonFSharpOptions.Default()
-        .ToJsonSerializerOptions()
-        
-JsonFSharpOptions.Default()
-    .AddToJsonSerializerOptions(options)
+let options = JsonFSharpOptions.Default().ToJsonSerializerOptions()
+
+JsonFSharpOptions.Default().AddToJsonSerializerOptions(options)
 
 let assertTransaction (expectedTransaction: TransactionView) : unit =
     let httpRequest = new HttpRequestMessage(HttpMethod.Get, "/")
     let response = testRequest httpRequest
     let content = response.Content.ReadAsStringAsync().Result
-    let transactions = JsonSerializer.Deserialize<TransactionView list> content
-    transactions.Length |> should be (greaterThan 0)
+
+    let transaction =
+        JsonSerializer.Deserialize<TransactionView list> content
+        |> List.find (fun t -> t.TransactionId = expectedTransaction.TransactionId)
+
+    transaction.Status |> should equal expectedTransaction.Status
+    transaction.Amount |> should equal expectedTransaction.Amount
+    transaction.CustomerId |> should equal expectedTransaction.CustomerId
+    transaction.StartedAt |> should equal expectedTransaction.StartedAt
 
 let transactionWithNegativeAmount =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = -1m
-      StartedAt = DateTimeOffset.UtcNow }
+      StartedAt = DateTime.Now }
 
 let transactionFromFuture =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = 1m
-      StartedAt = DateTimeOffset.UtcNow.AddDays(10) }
+      StartedAt = DateTime.Now.AddDays(10) }
 
 let transactionFromFutureWithNegativeAmount =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = -1m
-      StartedAt = DateTimeOffset.UtcNow.AddDays(10) }
+      StartedAt = DateTime.Now.AddDays(10) }
 
 let invalidInitializeRequests: obj[] list =
     [ [| transactionWithNegativeAmount |]
@@ -68,7 +72,7 @@ let validTransaction =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = 123m
-      StartedAt = DateTime.UtcNow.AddMinutes(-1) }
+      StartedAt = DateTime.Now.AddDays(-1) }
 
 [<Fact>]
 let ``accept valid initialize transaction request and successfully acknowledge it with provider`` () =
@@ -82,7 +86,7 @@ let validTransactionThatCausesInfrastructureError =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = 1m
-      StartedAt = DateTimeOffset.UtcNow.AddMinutes(-1) }
+      StartedAt = DateTime.Now.AddDays(-1) }
 
 [<Fact>]
 let ``accept valid initialize transaction request and handle infrastructure error while calling provider`` () =
@@ -97,7 +101,7 @@ let validTransactionThatIsRejectedByProvider =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
       Amount = 32m
-      StartedAt = DateTimeOffset.UtcNow.AddMinutes(-1) }
+      StartedAt = DateTime.Now.AddDays(-1) }
 
 [<Fact>]
 let ``accept valid transaction request rejected by provider`` () =
@@ -113,6 +117,6 @@ let ``accept valid transaction request rejected by provider`` () =
           CustomerId = validTransactionThatIsRejectedByProvider.CustomerId
           StartedAt = validTransactionThatIsRejectedByProvider.StartedAt
           FinishedAt = None
-          ProviderReference = ""
+          ProviderReference = None
           Amount = validTransactionThatIsRejectedByProvider.Amount
-          Status = "" }
+          Status = "Acknowledged" }

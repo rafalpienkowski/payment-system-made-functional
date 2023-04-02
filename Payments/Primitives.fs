@@ -22,7 +22,7 @@ module ConstrainedType =
             Ok(ctor value)
 
     let createPastDateTime fieldName ctor value =
-        if value > DateTimeOffset.UtcNow then
+        if value > DateTime.UtcNow then
             Error $"%s{fieldName} can not be from the future"
         else
             Ok(ctor value)
@@ -31,9 +31,9 @@ type TransactionId = private TransactionId of Guid
 type CustomerId = private CustomerId of Guid
 type TransactionAmount = private TransactionAmount of decimal
 type ProviderReference = private ProviderReference of string
-type StartDate = private StartDate of DateTimeOffset
-type UpdateDate = private UpdateDate of DateTimeOffset
-type FinishDate = private FinishDate of DateTimeOffset
+type StartDate = private StartDate of DateTime
+type UpdateDate = private UpdateDate of DateTime
+type FinishDate = private FinishDate of DateTime
 
 type ParsingError = ParsingError of string list
 type InfrastructureError = InfrastructureError of string list

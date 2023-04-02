@@ -10,4 +10,4 @@ open Payments.WebApi.Tests.TestHelpers
 let ``return pong`` () =
     let response = testRequest (new HttpRequestMessage(HttpMethod.Get, "/ping"))
     response.StatusCode |> should equal HttpStatusCode.OK
-    response.Content.ReadAsStringAsync().Result |> should equal @"{""response"":""pong""}"
+    response.Content.ReadAsStringAsync().Result |> should equal @"{""Response"":""pong""}"

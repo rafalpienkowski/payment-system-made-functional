@@ -79,9 +79,9 @@ type TransactionProjection() =
 type TransactionView =
     { TransactionId: Guid
       CustomerId: Guid
-      StartedAt: DateTimeOffset
-      FinishedAt: DateTimeOffset option
-      ProviderReference: string
+      StartedAt: DateTime
+      FinishedAt: DateTime option
+      ProviderReference: string option
       Amount: decimal
       Status: string }
 
@@ -92,9 +92,9 @@ let getAllTransactions (connectionString: string) : TransactionView list =
     |> Sql.execute (fun read ->
         { TransactionId = read.uuid "transaction_id"
           CustomerId = read.uuid "customer_id"
-          StartedAt = read.datetimeOffset "started_at"
-          FinishedAt = read.datetimeOffsetOrNone "finished_at"
-          ProviderReference = read.string "provider_reference"
+          StartedAt = read.dateTime "started_at"
+          FinishedAt = read.dateTimeOrNone "finished_at"
+          ProviderReference = read.stringOrNone "provider_reference"
           Amount = read.decimal "amount"
           Status = read.string "status" })
 

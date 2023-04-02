@@ -82,6 +82,15 @@ let ``accept valid initialize transaction request and successfully acknowledge i
 
     response.StatusCode |> should equal HttpStatusCode.OK
 
+    assertTransaction
+        { TransactionId = validTransaction.TransactionId
+          CustomerId = validTransaction.CustomerId
+          StartedAt = validTransaction.StartedAt
+          FinishedAt = None
+          ProviderReference = None
+          Amount = validTransaction.Amount
+          Status = "Acknowledged" }
+
 let validTransactionThatCausesInfrastructureError =
     { TransactionId = Guid.NewGuid()
       CustomerId = Guid.NewGuid()
@@ -96,6 +105,15 @@ let ``accept valid initialize transaction request and handle infrastructure erro
     let response = testRequest httpRequest
 
     response.StatusCode |> should equal HttpStatusCode.InternalServerError
+
+    assertTransaction
+        { TransactionId = validTransactionThatCausesInfrastructureError.TransactionId
+          CustomerId = validTransactionThatCausesInfrastructureError.CustomerId
+          StartedAt = validTransactionThatCausesInfrastructureError.StartedAt
+          FinishedAt = None
+          ProviderReference = None
+          Amount = validTransactionThatCausesInfrastructureError.Amount
+          Status = "Initialized" }
 
 let validTransactionThatIsRejectedByProvider =
     { TransactionId = Guid.NewGuid()

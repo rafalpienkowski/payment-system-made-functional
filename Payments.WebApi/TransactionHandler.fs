@@ -5,6 +5,7 @@ open FsToolkit.ErrorHandling
 open FsToolkit.ErrorHandling.Operator.Result
 open Giraffe
 open Microsoft.AspNetCore.Http
+open Microsoft.Extensions.Configuration
 open Microsoft.FSharp.Control
 open Microsoft.FSharp.Core
 open FsToolkit.ErrorHandling.Operator.Validation
@@ -66,13 +67,23 @@ let mapValidationError (v: Validation<TransactionCommand, string>) : Result<Tran
     | Error errorValue -> Error(ParsingError errorValue)
     | Ok command -> Ok command
 
-let createTransaction (startStream: StartStream) (transactionId: Guid) (events: TransactionEvent list) =
+let createTransaction
+    connectionString
+    (startStream: StartStream)
+    (transactionId: Guid)
+    (events: TransactionEvent list)
+    =
     let eventObjs = events |> List.map (fun e -> e :> obj)
-    startStream transactionId eventObjs
+    startStream connectionString transactionId eventObjs
 
-let saveTransaction (appendStream: AppendStream) (transactionId: Guid) (events: TransactionEvent list) =
+let saveTransaction
+    connectionString
+    (appendStream: AppendStream)
+    (transactionId: Guid)
+    (events: TransactionEvent list)
+    =
     let eventObjs = events |> List.map (fun e -> e :> obj)
-    appendStream transactionId eventObjs
+    appendStream connectionString transactionId eventObjs
 
 let buildTransactionFromEvents (rawEvents: obj list) : Result<Transaction, TransactionNotFoundError> =
     if rawEvents.Length = 0 then
@@ -86,9 +97,11 @@ let buildTransactionFromEvents (rawEvents: obj list) : Result<Transaction, Trans
         let transaction = List.fold evolve initial events
         Ok(transaction)
 
-let loadTransaction (fetchStream: FetchStream) transactionId : Result<Transaction, TransactionError> =
+let loadTransaction connectionString (fetchStream: FetchStream) transactionId : Result<Transaction, TransactionError> =
     result {
-        let! rawEvents = fetchStream transactionId |> Result.mapError TransactionError.Infrastructure
+        let! rawEvents =
+            fetchStream connectionString transactionId
+            |> Result.mapError TransactionError.Infrastructure
 
         let! transaction =
             buildTransactionFromEvents rawEvents
@@ -140,7 +153,10 @@ let initializeTransactionHandler
                 let initial = Initial
                 let! initializeEvents = decide command initial |> Result.mapError TransactionError.Processing
 
-                createTransaction startStream request.TransactionId initializeEvents
+                let config = ctx.GetService<IConfiguration>()
+                let connectionString = config.GetConnectionString "Database"
+
+                createTransaction connectionString startStream request.TransactionId initializeEvents
                 |> Result.mapError TransactionError.Infrastructure
                 |> ignore
 
@@ -151,7 +167,7 @@ let initializeTransactionHandler
                     decide acknowledgeCommand transaction
                     |> Result.mapError TransactionError.Processing
 
-                return saveTransaction appendStream request.TransactionId ackEvents
+                return saveTransaction connectionString appendStream request.TransactionId ackEvents
             }
 
         produceResponse operationResult next ctx
@@ -172,11 +188,14 @@ let postTransactionHandler (fetchStream: FetchStream) (appendStream: AppendStrea
                     |> mapValidationError
                     |> Result.mapError TransactionError.Parsing
 
-                let! transaction = loadTransaction fetchStream request.TransactionId
+                let config = ctx.GetService<IConfiguration>()
+                let connectionString = config.GetConnectionString "Database"
+
+                let! transaction = loadTransaction connectionString fetchStream request.TransactionId
 
                 let! postEvents = decide command transaction |> Result.mapError TransactionError.Processing
 
-                return saveTransaction appendStream request.TransactionId postEvents
+                return saveTransaction connectionString appendStream request.TransactionId postEvents
             }
 
         produceResponse operationResult next ctx
@@ -196,11 +215,14 @@ let confirmTransactionHandler (fetchStream: FetchStream) (appendStream: AppendSt
                     |> mapValidationError
                     |> Result.mapError TransactionError.Parsing
 
-                let! transaction = loadTransaction fetchStream request.TransactionId
+                let config = ctx.GetService<IConfiguration>()
+                let connectionString = config.GetConnectionString "Database"
+                
+                let! transaction = loadTransaction connectionString fetchStream request.TransactionId
 
                 let! confirmEvents = decide command transaction |> Result.mapError TransactionError.Processing
 
-                return saveTransaction appendStream request.TransactionId confirmEvents
+                return saveTransaction connectionString appendStream request.TransactionId confirmEvents
             }
 
         produceResponse operationalResult next ctx

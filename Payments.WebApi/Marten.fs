@@ -2,25 +2,26 @@ module Payments.WebApi.Marten
 
 open Marten
 open Marten.Events.Projections
+open Microsoft.AspNetCore.Http
+open Microsoft.Extensions.Configuration
 open Payments.Decider
 open Payments.Primitives
 open Payments.WebApi.View
 open Weasel.Core
+open Giraffe
 
-let connectionString =
-    "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;"
-
-let documentStore =
+let documentStore (connectionString: string) =
     DocumentStore.For(fun opt ->
         opt.Connection(connectionString)
         opt.AutoCreateSchemaObjects <- AutoCreate.All
         opt.Projections.Add(TransactionProjection(), ProjectionLifecycle.Inline))
 
 let startStream: StartStream =
-    fun streamId events ->
+    fun connectionString streamId events ->
         try
             let objects = events |> List.toArray
-            use session = documentStore.OpenSession()
+            let ds = documentStore connectionString
+            use session = ds.OpenSession()
             session.Events.StartStream(streamId, objects) |> ignore
             session.SaveChanges()
             Ok 0
@@ -28,10 +29,11 @@ let startStream: StartStream =
             Error(InfrastructureError [ ex.Message ])
 
 let appendStream: AppendStream =
-    fun streamId events ->
+    fun connectionString streamId events ->
         try
             let objects = events |> List.toArray
-            use session = documentStore.OpenSession()
+            let ds = documentStore connectionString
+            use session = ds.OpenSession()
             session.Events.Append(streamId, objects) |> ignore
             session.SaveChanges()
             Ok 0
@@ -39,9 +41,10 @@ let appendStream: AppendStream =
             Error(InfrastructureError [ ex.Message ])
 
 let fetchStream: FetchStream =
-    fun streamId ->
+    fun connectionString streamId ->
         try
-            use session = documentStore.OpenSession()
+            let ds = documentStore connectionString
+            use session = ds.OpenSession()
             let rawEvents = session.Events.FetchStream(streamId)
             let events = rawEvents :> seq<_> |> Seq.map (fun e -> e.Data) |> Seq.toList
             Ok events

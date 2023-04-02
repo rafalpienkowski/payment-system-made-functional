@@ -4,13 +4,11 @@ open System
 open Marten
 open Marten.Events.Projections
 open Microsoft.AspNetCore.Http
+open Microsoft.Extensions.Configuration
 open Payments.Transaction
 open Weasel.Postgresql.Tables
 open Giraffe
 open Npgsql.FSharp
-
-let connectionString =
-    "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;"
 
 type TransactionProjection() =
     inherit EventProjection()
@@ -100,5 +98,6 @@ let getAllTransactions (connectionString: string) : TransactionView list =
 
 let readTransactions: HttpHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
-        let transactions = getAllTransactions connectionString
+        let config = ctx.GetService<IConfiguration>()
+        let transactions = config.GetConnectionString "Database" |> getAllTransactions
         json transactions next ctx

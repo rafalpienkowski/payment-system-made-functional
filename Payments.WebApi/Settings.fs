@@ -8,9 +8,7 @@ open Payments.WebApi.Marten
 open Payments.WebApi.Provider
 open Payments.WebApi.View
 open System.Text.Json.Serialization
-
-let connectionString =
-    "User ID=postgres;Password=mysecretpassword;Host=localhost;Port=5432;Database=postgres;"
+open Microsoft.Extensions.Configuration
 
 let webApp =
     choose

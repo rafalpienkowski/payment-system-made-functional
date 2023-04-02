@@ -43,9 +43,9 @@ type TransactionCommand =
 type AcknowledgeTransactionWithProvider =
     TransactionId -> TransactionAmount -> Result<TransactionCommand, TransactionError>
 
-type StartStream = Guid -> obj list -> Result<int, InfrastructureError>
-type AppendStream = Guid -> obj list -> Result<int, InfrastructureError>
-type FetchStream = Guid -> Result<obj list, InfrastructureError>
+type StartStream = string -> Guid -> obj list -> Result<int, InfrastructureError>
+type AppendStream = string -> Guid -> obj list -> Result<int, InfrastructureError>
+type FetchStream = string -> Guid -> Result<obj list, InfrastructureError>
 
 let initializeTransaction
     (command: InitializeTransaction)

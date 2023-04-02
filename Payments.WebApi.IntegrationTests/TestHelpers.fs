@@ -7,7 +7,7 @@ open System.Net.Http
 open Microsoft.Extensions.Configuration
 open Payments.WebApi.Settings
 
-let appConfig (context: WebHostBuilderContext) (conf: IConfigurationBuilder) : unit =
+let appConfig (_: WebHostBuilderContext) (conf: IConfigurationBuilder) : unit =
     let projectDir = Directory.GetCurrentDirectory();
     let configPath = Path.Combine(projectDir, "appsettings.json");
     conf.AddJsonFile(configPath) |> ignore

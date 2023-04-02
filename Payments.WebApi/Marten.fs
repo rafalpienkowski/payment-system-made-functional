@@ -2,13 +2,10 @@ module Payments.WebApi.Marten
 
 open Marten
 open Marten.Events.Projections
-open Microsoft.AspNetCore.Http
-open Microsoft.Extensions.Configuration
 open Payments.Decider
 open Payments.Primitives
 open Payments.WebApi.View
 open Weasel.Core
-open Giraffe
 
 let documentStore (connectionString: string) =
     DocumentStore.For(fun opt ->

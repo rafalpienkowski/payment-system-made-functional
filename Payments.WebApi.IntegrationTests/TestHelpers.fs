@@ -1,6 +1,5 @@
 module Payments.WebApi.Tests.TestHelpers
 
-open System
 open System.IO
 open Microsoft.AspNetCore.TestHost
 open Microsoft.AspNetCore.Hosting

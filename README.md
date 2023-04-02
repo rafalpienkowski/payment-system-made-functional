@@ -9,9 +9,15 @@ The system implements a sample payment integration with 3rd party.
 
 The project isn't idea and it does't have to be. 
 
-
 ## Payment flow
 
 The payment flow looks like this:
 
 ![flow](flow.jpg)
+
+## Used patterns & technologies
+
+- Event Sourcing via [Marten](https://martendb.io/)
+- [Decider](https://thinkbeforecoding.com/post/2021/12/17/functional-event-sourcing-decider)
+- CQRS
+- WebApi via [Giraffe](https://github.com/giraffe-fsharp/Giraffe)
